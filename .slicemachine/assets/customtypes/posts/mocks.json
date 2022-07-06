@@ -1,0 +1,99 @@
+{
+  "id": "a4693861-e43f-49c2-96f1-e5e947ee92cd",
+  "uid": "hic-ut-iusto",
+  "type": "posts",
+  "data": {
+    "title": [
+      {
+        "type": "paragraph",
+        "text": "Irure dolor esse ad occaecat. Consectetur amet eu tempor aliquip cillum anim ipsum. Quis et ullamco deserunt ullamco consequat reprehenderit do incididunt.",
+        "spans": []
+      }
+    ],
+    "subtitle": [
+      {
+        "type": "paragraph",
+        "text": "Consectetur culpa consectetur reprehenderit reprehenderit ea amet ea do magna. Do esse nisi occaecat incididunt. Commodo est eiusmod minim aute nulla et est dolor do.",
+        "spans": []
+      }
+    ],
+    "author": [
+      {
+        "type": "paragraph",
+        "text": "Culpa tempor dolor elit deserunt Lorem irure qui dolor proident consectetur consequat consectetur. Id est aute do deserunt qui consequat culpa qui.",
+        "spans": []
+      }
+    ],
+    "banner": {
+      "dimensions": {
+        "width": 900,
+        "height": 500
+      },
+      "alt": "Placeholder image",
+      "copyright": null,
+      "url": "https://images.unsplash.com/photo-1491975474562-1f4e30bc9468?w=900&h=500&fit=crop"
+    },
+    "content": [
+      {
+        "heading": "transform real-time interfaces",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Adipisicing veniam qui excepteur anim tempor ex nostrud laboris quis duis non reprehenderit commodo Lorem mollit. Sit reprehenderit culpa nostrud anim aliqua incididunt tempor nostrud deserunt ullamco do laboris amet non. Dolore incididunt minim officia irure occaecat exercitation occaecat tempor.",
+            "spans": []
+          }
+        ]
+      },
+      {
+        "heading": "generate value-added solutions",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Dolor excepteur irure duis dolor do irure elit non laborum est nostrud in reprehenderit. Duis quis cillum adipisicing aute id aute nostrud fugiat cillum ea anim quis irure.",
+            "spans": []
+          }
+        ]
+      },
+      {
+        "heading": "reintermediate intuitive synergies",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Laboris est esse do dolore in nulla voluptate. Minim pariatur dolor incididunt quis.",
+            "spans": []
+          }
+        ]
+      },
+      {
+        "heading": "leverage clicks-and-mortar eyeballs",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Culpa sit aute aute proident proident do tempor commodo exercitation aliqua minim et.",
+            "spans": []
+          }
+        ]
+      },
+      {
+        "heading": "disintermediate transparent metrics",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Id mollit enim consectetur. Reprehenderit cillum enim aliqua labore.",
+            "spans": []
+          }
+        ]
+      },
+      {
+        "heading": "iterate compelling portals",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Id nisi velit pariatur commodo ullamco tempor dolor nisi esse mollit consectetur eiusmod. Sint qui culpa fugiat. Aliqua officia aliquip qui enim.",
+            "spans": []
+          }
+        ]
+      }
+    ]
+  }
+}

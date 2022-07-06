@@ -1,0 +1,39 @@
+.Container{
+    width: 100%;
+    padding:1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.ContainerPosts{
+    max-width: 1200px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.PostItem{
+    display: flex;
+    flex-direction: column;
+    h1{
+        font-size: 1.75rem;
+        margin-bottom: .5rem;
+    }
+    p{
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+.ContainerPostAuthor_Date{
+    display: flex;
+    gap: 1.75rem;
+}
+
+.ContentInfo{
+    display: flex;
+    gap: .5rem;
+}
