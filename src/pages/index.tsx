@@ -4,10 +4,13 @@ import Head from "next/head";
 import Link from 'next/link';
 import Header from '../components/Header';
 import { getPrismicClient } from '../services/prismic';
-import { AiOutlineCalendar } from "react-icons/ai";
+import { AiOutlineCalendar , AiOutlineUser } from "react-icons/ai";
+
 
 //import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
+import { FormatDate } from '../hooks/FormatDate';
+import { useState } from 'react';
 
 interface Post {
   uid?: string;
@@ -25,10 +28,21 @@ interface PostPagination {
 }
 
 interface HomeProps {
-  postsPagination: PostPagination;
+  posts: PostPagination;
 }
 
-export default function Home({postsPagination}:HomeProps): JSX.Element {
+export default function Home({posts}:HomeProps): JSX.Element {
+  
+  const [listPosts, setListPosts] = useState(posts.results);
+  const [nextPage, setNextPage] = useState(posts.next_page);
+
+  function loadAllPosts(link: string) {
+    fetch(link).then(response => response.json())
+      .then(data => {
+        console.log(data)
+      })
+  }
+
 
 
   return (
@@ -37,25 +51,25 @@ export default function Home({postsPagination}:HomeProps): JSX.Element {
       <main className={styles.Container}>
         <Header />
         <div className={styles.ContainerPosts}>
-          {postsPagination.results.map(item => (
-            <Link  href={`/posts/${encodeURIComponent(item.uid)}`} key={item.uid}>
+          {posts.results.map(item => (
+            <Link  href={`/post/${encodeURIComponent(item.uid)}`} key={item.uid}>
               <a>
               
                 <div className={styles.PostItem}>
               
-                  <h1>Como utilizar Hooks</h1>
+                  <h1>{item.data.title}</h1>
               
-                  <p>Pensando em sincronização em vez de ciclos de vida.</p>
+                  <p>{item.data.subtitle}</p>
               
                   <div className={styles.ContainerPostAuthor_Date}>
                     <div className={styles.ContentInfo}>
                       <AiOutlineCalendar size={20} />
-                      15 Mar 2021
+                      {FormatDate(item.first_publication_date)}
                     </div>
                     
                     <div className={styles.ContentInfo}>
-                      <AiOutlineCalendar size={20} />
-                      15 Mar 2021
+                      <AiOutlineUser size={20} />
+                      {item.data.author}
                     </div>
                   
                   </div>
@@ -67,6 +81,18 @@ export default function Home({postsPagination}:HomeProps): JSX.Element {
           ))
           }
         </div>
+
+        {posts.next_page &&
+
+          <div className={styles.ContainerBtn}>
+            <div onClick={() => loadAllPosts(nextPage)} className={styles.btn}>
+              Carregar mais posts
+            </div>
+          
+          </div>
+
+        }
+      
       </main>
     </>
   );
@@ -75,6 +101,26 @@ export default function Home({postsPagination}:HomeProps): JSX.Element {
 export const getStaticProps:GetStaticProps = async () => {
 
   const prismic = getPrismicClient({});
-  const postsPagination = await prismic.getByType('posts');
-  return {props: {postsPagination}};
+  const response = await prismic.getByType('posts', {pageSize: 2});
+
+
+  const results = response.results.map((post) => {
+    return{
+      uid: post.uid,
+      first_publication_date: post.first_publication_date,
+      data: {
+        title:asText(post.data.title),
+        subtitle:asText(post.data.subtitle),
+        author:asText(post.data.author),
+      }
+    }
+  
+  });
+
+  const posts:PostPagination = {
+    next_page:response.next_page,
+    results:results,
+  };
+
+  return {props: {posts}};
 };

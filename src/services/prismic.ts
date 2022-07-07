@@ -6,12 +6,8 @@ export interface PrismicConfig {
   req?: HttpRequestLike;
 }
 
-export const repositoryName = 'pedro-auguscoelho--spacetraveling';
-
 export function getPrismicClient(config: PrismicConfig): prismic.Client {
-  const client = prismic.createClient(process.env.PRISMIC_API_ENDPOINT, {
-    accessToken:process.env.PRISMIC_ACCESS_TOKEN
-  });
+  const client = prismic.createClient(process.env.PRISMIC_API_ENDPOINT);
 
   enableAutoPreviews({
     client,
