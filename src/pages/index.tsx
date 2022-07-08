@@ -9,6 +9,7 @@ import { AiOutlineCalendar , AiOutlineUser } from "react-icons/ai";
 
 //import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
+import commonStyles from '../styles/common.module.scss';
 import { FormatDate } from '../hooks/FormatDate';
 import { useState } from 'react';
 
@@ -36,22 +37,31 @@ export default function Home({posts}:HomeProps): JSX.Element {
   const [listPosts, setListPosts] = useState(posts.results);
   const [nextPage, setNextPage] = useState(posts.next_page);
 
-  function loadAllPosts(link: string) {
-    fetch(link).then(response => response.json())
-      .then(data => {
-        console.log(data)
-      })
+  const loadAllPosts = async (link: string) => {
+    const response = await fetch(link);
+    const json = await response.json();
+    const newPost:Post[] = json.results.map((post) => {
+      return{
+        uid: post.uid,
+        first_publication_date: post.first_publication_date,
+        data: {
+          title:asText(post.data.title),
+          subtitle:asText(post.data.subtitle),
+          author:asText(post.data.author),
+        }
+      }
+    })
+    setListPosts([...listPosts, ...newPost]);
+    setNextPage(json.next_page);
   }
-
-
 
   return (
     <>
       <Head>SpaceTraveling</Head>
-      <main className={styles.Container}>
+      <main className={commonStyles.Container}>
         <Header />
         <div className={styles.ContainerPosts}>
-          {posts.results.map(item => (
+          {listPosts.map(item => (
             <Link  href={`/post/${encodeURIComponent(item.uid)}`} key={item.uid}>
               <a>
               
@@ -82,7 +92,7 @@ export default function Home({posts}:HomeProps): JSX.Element {
           }
         </div>
 
-        {posts.next_page &&
+        {nextPage &&
 
           <div className={styles.ContainerBtn}>
             <div onClick={() => loadAllPosts(nextPage)} className={styles.btn}>
@@ -101,7 +111,7 @@ export default function Home({posts}:HomeProps): JSX.Element {
 export const getStaticProps:GetStaticProps = async () => {
 
   const prismic = getPrismicClient({});
-  const response = await prismic.getByType('posts', {pageSize: 2});
+  const response = await prismic.getByType('posts', {pageSize: 1});
 
 
   const results = response.results.map((post) => {
@@ -114,7 +124,6 @@ export const getStaticProps:GetStaticProps = async () => {
         author:asText(post.data.author),
       }
     }
-  
   });
 
   const posts:PostPagination = {
