@@ -10,8 +10,9 @@ import { AiOutlineCalendar , AiOutlineUser } from "react-icons/ai";
 //import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
 import commonStyles from '../styles/common.module.scss';
-import { FormatDate } from '../hooks/FormatDate';
 import { useState } from 'react';
+import { format, parseISO } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface Post {
   uid?: string;
@@ -29,30 +30,26 @@ interface PostPagination {
 }
 
 interface HomeProps {
-  posts: PostPagination;
+  postsPagination: PostPagination;
 }
 
-export default function Home({posts}:HomeProps): JSX.Element {
+export default function Home({postsPagination}:HomeProps): JSX.Element {
   
-  const [listPosts, setListPosts] = useState(posts.results);
-  const [nextPage, setNextPage] = useState(posts.next_page);
+  const [posts, setPosts] = useState(postsPagination);
+  const [hasNext, setHasNext] = useState(!!postsPagination.next_page);
 
-  const loadAllPosts = async (link: string) => {
-    const response = await fetch(link);
-    const json = await response.json();
-    const newPost:Post[] = json.results.map((post) => {
-      return{
-        uid: post.uid,
-        first_publication_date: post.first_publication_date,
-        data: {
-          title:asText(post.data.title),
-          subtitle:asText(post.data.subtitle),
-          author:asText(post.data.author),
-        }
-      }
-    })
-    setListPosts([...listPosts, ...newPost]);
-    setNextPage(json.next_page);
+  function loadAllPosts(link: string) {
+    fetch(link).then(response => response.json())
+      .then(data => {
+        const newPosts = {...posts};
+
+        setPosts({
+          ...newPosts,
+          next_page: data.next_page,
+          results: [...newPosts.results, ...data.results]
+        })
+        setHasNext(!!data.next_page)
+      })
   }
 
   return (
@@ -61,10 +58,10 @@ export default function Home({posts}:HomeProps): JSX.Element {
       <main className={commonStyles.Container}>
         <Header />
         <div className={styles.ContainerPosts}>
-          {listPosts.map(item => (
+          {posts.results.map(item => (
             <Link  href={`/post/${encodeURIComponent(item.uid)}`} key={item.uid}>
               <a>
-              
+                
                 <div className={styles.PostItem}>
               
                   <h1>{item.data.title}</h1>
@@ -74,7 +71,9 @@ export default function Home({posts}:HomeProps): JSX.Element {
                   <div className={styles.ContainerPostAuthor_Date}>
                     <div className={styles.ContentInfo}>
                       <AiOutlineCalendar size={20} />
-                      {FormatDate(item.first_publication_date)}
+                      {format(parseISO(item.first_publication_date), 'dd MMM yyyy', {
+                        locale: ptBR,
+                      }).toString()}
                     </div>
                     
                     <div className={styles.ContentInfo}>
@@ -92,10 +91,10 @@ export default function Home({posts}:HomeProps): JSX.Element {
           }
         </div>
 
-        {nextPage &&
+        {hasNext &&
 
           <div className={styles.ContainerBtn}>
-            <div onClick={() => loadAllPosts(nextPage)} className={styles.btn}>
+            <div onClick={() => loadAllPosts(posts.next_page)} className={styles.btn}>
               Carregar mais posts
             </div>
           
@@ -111,25 +110,12 @@ export default function Home({posts}:HomeProps): JSX.Element {
 export const getStaticProps:GetStaticProps = async () => {
 
   const prismic = getPrismicClient({});
-  const response = await prismic.getByType('posts', {pageSize: 1});
-
-
-  const results = response.results.map((post) => {
-    return{
-      uid: post.uid,
-      first_publication_date: post.first_publication_date,
-      data: {
-        title:asText(post.data.title),
-        subtitle:asText(post.data.subtitle),
-        author:asText(post.data.author),
-      }
-    }
+  const postsResponse = await prismic.getByType("posts", {
+    lang: 'pt-BR',
+    pageSize: 2,
   });
 
-  const posts:PostPagination = {
-    next_page:response.next_page,
-    results:results,
-  };
+  const postsPagination = {...postsResponse}
 
-  return {props: {posts}};
+  return {props: {postsPagination}};
 };
