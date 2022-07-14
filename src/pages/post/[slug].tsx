@@ -11,6 +11,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { asHTML, asText } from '@prismicio/helpers';
 
 interface Post {
   first_publication_date: string | null;
@@ -34,6 +35,8 @@ interface PostProps {
 }
 
 export default function Post({post}:PostProps) {
+
+  console.log(post);
 
   const totalPostPhrases = post.data.content.reduce((acc, item) => {
     const heading = item.heading.trim().split(' ').length;
@@ -81,7 +84,7 @@ export default function Post({post}:PostProps) {
 
             <div className={styles.ContentAuthorDate}>
               <AiOutlineClockCircle size={20} />
-              4 min
+              {minutesToReadThePost} min
             </div>
           
           </div>
@@ -142,12 +145,12 @@ export const getStaticProps:GetStaticProps = async ({params}) => {
     uid: response.uid,
     first_publication_date: response.first_publication_date,
     data: {
-      title: response.data.title,
-      subtitle: response.data.subtitle,
+      title: asText(response.data.title),
+      subtitle: asText(response.data.subtitle),
       banner: {
         url: response.data.banner.url,
       },
-      author: response.data.author,
+      author: asText(response.data.author),
       content: response.data.content,
     },
   };

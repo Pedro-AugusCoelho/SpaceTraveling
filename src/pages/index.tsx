@@ -1,4 +1,4 @@
-import { asText } from '@prismicio/helpers';
+import { asText , asDate } from '@prismicio/helpers';
 import { GetStaticProps } from 'next';
 import Head from "next/head";
 import Link from 'next/link';
@@ -42,13 +42,25 @@ export default function Home({postsPagination}:HomeProps): JSX.Element {
     fetch(link).then(response => response.json())
       .then(data => {
         const newPosts = {...posts};
+        
+        const results = data.results.map((post) => {
+          return{
+              uid: post.uid,
+              first_publication_date:post.first_publication_date,
+              data:{
+                title:asText(post.data.title),
+                subtitle:asText(post.data.subtitle),
+                author:asText(post.data.author),
+              }
+          }
+        });
 
         setPosts({
           ...newPosts,
           next_page: data.next_page,
-          results: [...newPosts.results, ...data.results]
+          results: [...newPosts.results, ...results]
         })
-        setHasNext(!!data.next_page)
+        setHasNext(!!data.next_page);
       })
   }
 
@@ -110,12 +122,27 @@ export default function Home({postsPagination}:HomeProps): JSX.Element {
 export const getStaticProps:GetStaticProps = async () => {
 
   const prismic = getPrismicClient({});
-  const postsResponse = await prismic.getByType("posts", {
+  const Response = await prismic.getByType("posts", {
     lang: 'pt-BR',
     pageSize: 2,
   });
 
-  const postsPagination = {...postsResponse}
+  const results = Response.results.map((post) => {
+    return{
+        uid: post.uid,
+        first_publication_date:post.first_publication_date,
+        data:{
+          title:asText(post.data.title),
+          subtitle:asText(post.data.subtitle),
+          author:asText(post.data.author),
+        }
+    }
+  });
+
+  const postsPagination = {
+    next_page: Response.next_page,
+    results:results
+  }
 
   return {props: {postsPagination}};
 };
